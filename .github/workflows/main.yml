@@ -22,8 +22,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Government Job Update
-        env:
-          NODE_OPTIONS: --no-warnings
         run: |
           node <<'EOF'
           const fs = require("fs");
@@ -61,8 +59,9 @@ jobs:
 
           function cleanText(text) {
             return text
-              .replace(/\s+/g, " ")
+              .replace(/<[^>]*>/g, " ")
               .replace(/&nbsp;/gi, " ")
+              .replace(/\s+/g, " ")
               .trim();
           }
 
@@ -73,82 +72,71 @@ jobs:
               t.includes("admit card") ||
               t.includes("admit-card") ||
               t.includes("hall ticket")
-            ) {
-              return "admit_card";
-            }
+            ) return "admit_card";
 
             if (
               t.includes("answer key") ||
               t.includes("answer-key")
-            ) {
-              return "answer_key";
-            }
+            ) return "answer_key";
 
             if (
               t.includes("result") ||
               t.includes("final result") ||
               t.includes("written result")
-            ) {
-              return "result";
-            }
+            ) return "result";
 
             return "latest";
           }
 
-                    function useful(text, href) {
-            const t = (text + " " + href).toLowerCase();
+          function isUseful(title, href) {
+            const t = (title + " " + href).toLowerCase();
 
-            const exclude = [
-              "calendar",
-              "previous question papers",
-              "question papers",
-              "cut-off marks",
-              "marks information",
-              "marks of recommended candidates",
-              "specimen question",
-              "common mistakes",
-              "revised syllabus",
-              "representation on question papers",
-              "demo files",
-              "forms for certificates",
-              "view archives",
-              "subscribe",
-              "web advertisement",
-              "career article",
-              "economy",
-              "hindi",
-              "skip to main content"
+            const badWords = [
+              "skip to main",
+              "skip to content",
+              "home",
+              "login",
+              "logout",
+              "register",
+              "contact us",
+              "privacy policy",
+              "terms",
+              "accessibility",
+              "sitemap",
+              "menu",
+              "search"
             ];
 
-            if (exclude.some(k => t.includes(k))) {
+            if (badWords.some(x => t === x || t.includes(x))) {
               return false;
             }
 
-            const include = [
-              "recruitment",
+            const goodWords = [
               "recruit",
+              "recruitment",
               "vacancy",
               "vacancies",
+              "notification",
               "advertisement",
-              "advertisements",
               "advt",
-              "job",
-              "jobs",
+              "exam",
               "application",
-              "applications are invited",
-              "apply online",
-              "online application",
+              "apply",
+              "admit card",
+              "admit-card",
+              "answer key",
+              "answer-key",
+              "result",
+              "selection",
+              "job",
               "post",
               "posts",
-              "selection",
-              "notification",
-              "exam",
-              "employment",
-              "hiring",
-              "engagement"
+              "career",
+              "engagement",
+              "appointment"
             ];
 
-            return include.some(k => t.includes(k));
+            return goodWords.some(x => t.includes(x));
           }
 
           function makeId(url) {
@@ -188,7 +176,6 @@ jobs:
               }
 
               const html = await response.text();
-
               const found = [];
 
               const regex =
@@ -204,24 +191,22 @@ jobs:
 
                 if (!href) continue;
 
-                const text = cleanText(
-                  match[2]
-                    .replace(/<[^>]*>/g, " ")
-                );
+                const title = cleanText(match[2]);
 
-                if (!text) continue;
+                if (!title) continue;
+                if (title.length < 8) continue;
+                if (title.length > 180) continue;
 
-                if (text.length < 5) continue;
-
-                if (!useful(text, href)) continue;
+                if (!isUseful(title, href)) continue;
 
                 found.push({
-                  title: text.substring(0, 180),
+                  title,
                   url: href
                 });
               }
 
               return found;
+
             } catch (error) {
               console.log(
                 "ERROR:",
@@ -234,9 +219,41 @@ jobs:
           }
 
           async function main() {
+
+            /*
+             * पुराने automatic generic junk entries हटाएँ।
+             * Published/manual jobs को नहीं छेड़ेंगे।
+             */
+            jobs = jobs.filter(j => {
+              if (!j.id || !j.id.startsWith("auto-")) {
+                return true;
+              }
+
+              const title = String(j.title || "").toLowerCase();
+
+              const bad = [
+                "skip to main",
+                "skip to content",
+                "home",
+                "login",
+                "logout",
+                "register",
+                "contact us",
+                "privacy policy",
+                "terms",
+                "accessibility",
+                "sitemap",
+                "menu",
+                "search"
+              ];
+
+              return !bad.some(x => title.includes(x));
+            });
+
             let added = 0;
 
             for (const source of sources) {
+
               const items = await fetchSource(source);
 
               console.log(
@@ -246,13 +263,13 @@ jobs:
               );
 
               for (const item of items) {
+
                 const id = "auto-" + makeId(item.url);
 
-                const exists = jobs.some(
-                  j =>
-                    j.id === id ||
-                    j.notificationUrl === item.url ||
-                    j.sourceUrl === item.url
+                const exists = jobs.some(j =>
+                  j.id === id ||
+                  j.notificationUrl === item.url ||
+                  j.sourceUrl === item.url
                 );
 
                 if (exists) continue;
@@ -289,23 +306,10 @@ jobs:
               JSON.stringify(jobs, null, 2) + "\n"
             );
 
-            console.log(
-              "--------------------------------"
-            );
-
-            console.log(
-              "Total jobs:",
-              jobs.length
-            );
-
-            console.log(
-              "New jobs:",
-              added
-            );
-
-            console.log(
-              "--------------------------------"
-            );
+            console.log("--------------------------------");
+            console.log("Total jobs:", jobs.length);
+            console.log("New jobs:", added);
+            console.log("--------------------------------");
           }
 
           main();
@@ -319,9 +323,9 @@ jobs:
           git add Data/jobs.json
 
           if git diff --cached --quiet; then
-            echo "No new government jobs found."
+            echo "No changes."
             exit 0
           fi
 
-          git commit -m "Automatic government job update"
+          git commit -m "Improve automatic government job filtering"
           git push
