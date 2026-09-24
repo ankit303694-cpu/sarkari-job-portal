@@ -1,14 +1,18 @@
 [
   {
-    "id": "demo-v7",
+    "id": "demo-1",
     "title": "सरकारी भर्ती अपडेट — उदाहरण",
     "department": "SSC",
+    "category": "SSC",
     "type": "latest",
-    "vacancy": "See official notice",
-    "lastDate": "See official notice",
+    "vacancy": "See official notification",
+    "lastDate": "See official notification",
     "notificationUrl": "https://ssc.gov.in/",
+    "sourceUrl": "https://ssc.gov.in/",
     "sourceName": "SSC",
     "status": "published",
-    "verified": true
+    "verified": true,
+    "fetchedAt": "2026-09-24T00:00:00.000Z",
+    "updatedAt": "2026-09-24T00:00:00.000Z"
   }
 ]

@@ -1,0 +1,132 @@
+{
+  "description": "Official-source registry. Add/update official public recruitment pages only.",
+  "central": [
+    {
+      "name": "SSC",
+      "category": "SSC",
+      "url": "https://ssc.gov.in/"
+    },
+    {
+      "name": "UPSC",
+      "category": "UPSC",
+      "url": "https://www.upsc.gov.in/"
+    },
+    {
+      "name": "RRB Main",
+      "category": "Railway",
+      "url": "https://indianrailways.gov.in/"
+    },
+    {
+      "name": "Employment News",
+      "category": "Central Govt",
+      "url": "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All"
+    },
+    {
+      "name": "IBPS",
+      "category": "Banking",
+      "url": "https://www.ibps.in/"
+    },
+    {
+      "name": "SBI Careers",
+      "category": "Banking",
+      "url": "https://sbi.co.in/web/careers"
+    },
+    {
+      "name": "RBI",
+      "category": "Banking",
+      "url": "https://opportunities.rbi.org.in/"
+    },
+    {
+      "name": "NABARD",
+      "category": "Banking",
+      "url": "https://www.nabard.org/default.aspx"
+    },
+    {
+      "name": "LIC",
+      "category": "Insurance",
+      "url": "https://licindia.in/careers"
+    },
+    {
+      "name": "EPFO",
+      "category": "Central Govt",
+      "url": "https://www.epfindia.gov.in/"
+    },
+    {
+      "name": "DRDO",
+      "category": "Defence",
+      "url": "https://www.drdo.gov.in/careers"
+    },
+    {
+      "name": "Indian Army",
+      "category": "Defence",
+      "url": "https://joinindianarmy.nic.in/"
+    },
+    {
+      "name": "Indian Navy",
+      "category": "Defence",
+      "url": "https://www.joinindiannavy.gov.in/"
+    },
+    {
+      "name": "Indian Air Force",
+      "category": "Defence",
+      "url": "https://agnipathvayu.cdac.in/"
+    },
+    {
+      "name": "Coast Guard",
+      "category": "Defence",
+      "url": "https://joinindiancoastguard.cdac.in/"
+    },
+    {
+      "name": "CTET",
+      "category": "Teaching",
+      "url": "https://ctet.nic.in/"
+    },
+    {
+      "name": "UGC NET",
+      "category": "Teaching",
+      "url": "https://ugcnet.nta.ac.in/"
+    },
+    {
+      "name": "NTA",
+      "category": "Education",
+      "url": "https://exams.nta.ac.in/"
+    },
+    {
+      "name": "FCI",
+      "category": "Central Govt",
+      "url": "https://fci.gov.in/"
+    },
+    {
+      "name": "India Post",
+      "category": "Postal",
+      "url": "https://indiapostgdsonline.gov.in/"
+    }
+  ],
+  "state": [
+    {
+      "name": "Bihar Government Jobs",
+      "category": "State Govt",
+      "url": "https://state.bihar.gov.in/"
+    },
+    {
+      "name": "BPSC",
+      "category": "Bihar",
+      "url": "https://bpsc.bih.nic.in/"
+    },
+    {
+      "name": "BSSC",
+      "category": "Bihar",
+      "url": "https://bssc.bihar.gov.in/"
+    },
+    {
+      "name": "UPPSC",
+      "category": "Uttar Pradesh",
+      "url": "https://uppsc.up.nic.in/"
+    },
+    {
+      "name": "UPSSSC",
+      "category": "Uttar Pradesh",
+      "url": "https://upsssc.gov.in/"
+    }
+  ]
+}
