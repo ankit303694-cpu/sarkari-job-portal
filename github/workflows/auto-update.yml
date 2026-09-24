@@ -1,12 +1,153 @@
+
 name: Automatic Government Job Update
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "0 */6 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
-  test:
+  update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Test
-        run: echo "Automatic update system is working"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch official government websites
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const sources = [
+            {
+              name: "SSC",
+              url: "https://ssc.gov.in/"
+            },
+            {
+              name: "UPSC",
+              url: "https://upsc.gov.in/"
+            },
+            {
+              name: "Railway",
+              url: "https://www.rrbapply.gov.in/"
+            },
+            {
+              name: "Employment News",
+              url: "https://employmentnews.gov.in/"
+            }
+          ];
+
+          async function main() {
+            const file = "Data/jobs.json";
+
+            let jobs = [];
+            try {
+              jobs = JSON.parse(fs.readFileSync(file, "utf8"));
+            } catch {
+              jobs = [];
+            }
+
+            for (const source of sources) {
+              try {
+                const response = await fetch(source.url, {
+                  headers: {
+                    "User-Agent": "Mozilla/5.0 GovernmentJobPortal"
+                  }
+                });
+
+                if (!response.ok) {
+                  console.log(source.name + " HTTP " + response.status);
+                  continue;
+                }
+
+                const html = await response.text();
+
+                const links = [...html.matchAll(
+                  /<a[^>]+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gis
+                )];
+
+                let added = 0;
+
+                for (const match of links) {
+                  const href = match[1];
+                  const text = match[2]
+                    .replace(/<[^>]+>/g, " ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+
+                  if (!text || text.length < 8) continue;
+
+                  const combined = (text + " " + href).toLowerCase();
+
+                  const keywords = [
+                    "recruitment",
+                    "vacancy",
+                    "vacancies",
+                    "notification",
+                    "recruit",
+                    "apply online",
+                    "admit card",
+                    "answer key",
+                    "result",
+                    "exam"
+                  ];
+
+                  if (!keywords.some(k => combined.includes(k))) continue;
+
+                  let fullUrl;
+                  try {
+                    fullUrl = new URL(href, source.url).href;
+                  } catch {
+                    continue;
+                  }
+
+                  if (jobs.some(j => j.sourceUrl === fullUrl)) continue;
+
+                  jobs.push({
+                    id: "auto-" + Date.now() + "-" + added,
+                    title: text.substring(0, 180),
+                    organization: source.name,
+                    type: combined.includes("result")
+                      ? "Result"
+                      : combined.includes("admit card")
+                      ? "Admit Card"
+                      : combined.includes("answer key")
+                      ? "Answer Key"
+                      : "Jobs",
+                    sourceUrl: fullUrl,
+                    status: "pending_verification",
+                    verified: false,
+                    fetchedAt: new Date().toISOString()
+                  });
+
+                  added++;
+                }
+
+                console.log(source.name + ": " + added + " new items");
+              } catch (error) {
+                console.log(source.name + " ERROR: " + error.message);
+              }
+            }
+
+            fs.mkdirSync("Data", { recursive: true });
+            fs.writeFileSync(file, JSON.stringify(jobs, null, 2));
+
+            console.log("Total jobs:", jobs.length);
+          }
+
+          main();
+          EOF
+
+      - name: Commit updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Data/jobs.json
+          git diff --cached --quiet || git commit -m "Automatic government job update"
+          git push
