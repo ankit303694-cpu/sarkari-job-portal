@@ -766,5 +766,33 @@
     "status": "pending_verification",
     "verified": false,
     "fetchedAt": "2026-09-24T18:16:40.034Z"
+  },
+  {
+    "id": "auto-d88f1158a7fdd61a",
+    "title": "Skip to main content",
+    "department": "UPSC",
+    "type": "latest",
+    "vacancy": "See official notification",
+    "lastDate": "See official notification",
+    "notificationUrl": "https://www.upsc.gov.in/recruitment/recruitment-advertisement#main-content",
+    "sourceUrl": "https://www.upsc.gov.in/recruitment/recruitment-advertisement#main-content",
+    "sourceName": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "fetchedAt": "2026-09-24T19:00:59.631Z"
+  },
+  {
+    "id": "auto-8cadc5f4c331a36e",
+    "title": "Skip to main content",
+    "department": "UPSC",
+    "type": "latest",
+    "vacancy": "See official notification",
+    "lastDate": "See official notification",
+    "notificationUrl": "https://www.upsc.gov.in/recruitment/recruitment-advertisement#skipCont",
+    "sourceUrl": "https://www.upsc.gov.in/recruitment/recruitment-advertisement#skipCont",
+    "sourceName": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "fetchedAt": "2026-09-24T19:00:59.750Z"
   }
 ]
