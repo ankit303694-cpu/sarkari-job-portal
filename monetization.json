@@ -1,0 +1,18 @@
+{
+  "adsense": {
+    "enabled": false,
+    "publisherId": "ca-pub-XXXXXXXXXXXXXXXX"
+  },
+  "affiliate": {
+    "enabled": false,
+    "links": []
+  },
+  "sponsored": {
+    "enabled": false,
+    "items": []
+  },
+  "analytics": {
+    "enabled": false,
+    "measurementId": "G-XXXXXXXXXX"
+  }
+}
