@@ -794,5 +794,19 @@
     "status": "pending_verification",
     "verified": false,
     "fetchedAt": "2026-09-24T17:44:01.166Z"
+  },
+  {
+    "id": "auto-23e5d630f563ba92",
+    "title": "(3.06 MB)",
+    "department": "UPSC",
+    "type": "latest",
+    "vacancy": "See official notification",
+    "lastDate": "See official notification",
+    "notificationUrl": "https://www.upsc.gov.in/sites/default/files/AdvtNo-11-2026-Engl-100926.pdf",
+    "sourceUrl": "https://www.upsc.gov.in/sites/default/files/AdvtNo-11-2026-Engl-100926.pdf",
+    "sourceName": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "fetchedAt": "2026-09-24T18:16:40.034Z"
   }
 ]
