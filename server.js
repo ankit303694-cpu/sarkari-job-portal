@@ -1,5 +1,5 @@
 const express=require("express"),cron=require("node-cron"),fs=require("fs"),path=require("path");
-const app=express(),PORT=process.env.PORT||3000,KEY=process.env.ADMIN_KEY||"change-me",D=path.join(__dirname,"data");
+const app=express(),PORT=process.env.PORT||3000,KEY=process.env.ADMIN_KEY||"change-me",path.join(__dirname,"data");
 app.use(express.json());app.use(express.static(path.join(__dirname,"public")));
 const rd=(f,d)=>{try{return JSON.parse(fs.readFileSync(path.join(D,f),"utf8"))}catch{return d}},wr=(f,x)=>fs.writeFileSync(path.join(D,f),JSON.stringify(x,null,2));
 function auth(req,res,next){if((req.headers["x-admin-key"]||req.query.key)!==KEY)return res.status(401).json({error:"Unauthorized"});next()}
