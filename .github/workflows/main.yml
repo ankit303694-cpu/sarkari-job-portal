@@ -37,9 +37,9 @@ jobs:
               url: "https://www.upsc.gov.in/recruitment/recruitment-advertisement"
             },
             {
-              name: "Railway",
-              url: "https://www.rrbapply.gov.in/"
-            },
+  name: "Railway",
+  url: "https://www.rrbpatna.gov.in/"
+},
             {
               name: "Employment News",
               url: "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All"
