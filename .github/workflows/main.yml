@@ -100,7 +100,7 @@ jobs:
               "job",
               "career"
               "employment",
-              "cen",
+              "cen"
             ];
 
             return keywords.some(k => t.includes(k));
