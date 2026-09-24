@@ -1,10 +1,9 @@
 name: Automatic Government Job Update
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"
-
 jobs:
   test:
     runs-on: ubuntu-latest
