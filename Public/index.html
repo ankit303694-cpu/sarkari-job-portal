@@ -1,1 +1,54 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sarkari Job Portal</title><meta name="description" content="सरकारी नौकरी, Admit Card, Answer Key और Result"><link rel="stylesheet" href="/style.css"></head><body><header><div class="wrap nav"><a class="logo" href="/">Sarkari Job Portal</a><a href="/admin.html">Admin</a></div></header><main class="wrap"><section class="hero"><span class="pill">Government Jobs • Results</span><h1>सरकारी नौकरी की पूरी जानकारी</h1><p>नई भर्ती, Admit Card, Answer Key और Result एक जगह।</p><input id="q" placeholder="भर्ती, विभाग, परीक्षा खोजें..."></section><div class="adbox">Advertisement</div><nav class="tabs"><button data-t="">सभी</button><button data-t="latest">Jobs</button><button data-t="admit">Admit Card</button><button data-t="answer-key">Answer Key</button><button data-t="result">Result</button></nav><div id="list" class="grid"></div><section id="sponsored"></section><section id="affiliate"></section></main><footer>© Sarkari Job Portal</footer><script src="/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sarkari Job Portal – सरकारी नौकरी, Admit Card, Result</title>
+
+<meta name="description" content="सरकारी नौकरी, Admit Card, Answer Key और Result की जानकारी एक जगह।">
+
+<!-- Google Search Console Verification -->
+<meta name="google-site-verification" content=<meta name="google-site-verification" content="WyFrv3P8oWPtoQDsavLvM87UXuxhIaDEsF3pf5MH9-w" />
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Sarkari Job Portal</h1>
+  <p>Government Jobs • Results</p>
+  <a href="admin.html">Admin</a>
+</header>
+
+<main>
+
+  <h2>सरकारी नौकरी की पूरी जानकारी</h2>
+
+  <input
+    id="search"
+    type="search"
+    placeholder="नौकरी खोजें..."
+  >
+
+  <div class="filters">
+    <button data-type="">सभी</button>
+    <button data-type="job">Jobs</button>
+    <button data-type="admit-card">Admit Card</button>
+    <button data-type="answer-key">Answer Key</button>
+    <button data-type="result">Result</button>
+  </div>
+
+  <div class="adbox">
+    Advertisement
+  </div>
+
+  <section id="jobs"></section>
+
+</main>
+
+<script src="app.js"></script>
+
+</body>
+</html>
