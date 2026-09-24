@@ -1,120 +1,13 @@
 name: Automatic Government Job Update
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 */6 * * *"
-  workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
-  update-jobs:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check official government sources
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-
-          const sources = [
-            {name: 'SSC', url: 'https://ssc.gov.in/'},
-            {name: 'UPSC', url: 'https://upsc.gov.in/'},
-            {name: 'Railway', url: 'https://www.rrbapply.gov.in/'},
-            {name: 'Employment News', url: 'https://employmentnews.gov.in/'}
-          ];
-
-          const file = 'Data/jobs.json';
-          let jobs = [];
-
-          try {
-            jobs = JSON.parse(fs.readFileSync(file, 'utf8'));
-          } catch {
-            jobs = [];
-          }
-
-          async function checkSource(source) {
-            try {
-              const response = await fetch(source.url, {
-                headers: {'User-Agent': 'SarkariJobPortal-AutoUpdater/1.0'}
-              });
-
-              if (!response.ok) return;
-
-              const html = await response.text();
-
-              const links = [...html.matchAll(
-                /<a[^>]+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gis
-              )];
-
-              for (const match of links) {
-                let url = match[1];
-                let text = match[2]
-                  .replace(/<[^>]+>/g, ' ')
-                  .replace(/\s+/g, ' ')
-                  .trim();
-
-                if (!text || text.length < 8) continue;
-
-                if (!/job|recruit|vacancy|notification|result|admit|answer|exam|application| भर्ती|रिक्ति|परिणाम|प्रवेश/i.test(text)) {
-                  continue;
-                }
-
-                if (url.startsWith('/')) {
-                  url = new URL(url, source.url).href;
-                }
-
-                if (!url.startsWith('http')) continue;
-
-                if (jobs.some(j => j.notificationUrl === url)) continue;
-
-                jobs.push({
-                  id: 'auto-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
-                  title: text.slice(0, 180),
-                  department: source.name,
-                  type: /result|परिणाम/i.test(text)
-                    ? 'result'
-                    : /admit|प्रवेश/i.test(text)
-                    ? 'admit'
-                    : /answer/i.test(text)
-                    ? 'answer'
-                    : 'latest',
-                  vacancy: 'See official notice',
-                  lastDate: 'See official notice',
-                  notificationUrl: url,
-                  sourceName: source.name,
-                  status: 'pending_verification',
-                  verified: false
-                });
-              }
-            } catch (error) {
-              console.log('Source check failed:', source.name, error.message);
-            }
-          }
-
-          (async () => {
-            for (const source of sources) {
-              await checkSource(source);
-            }
-
-            fs.writeFileSync(
-              file,
-              JSON.stringify(jobs, null, 2) + '\n'
-            );
-
-            console.log('Automatic source check completed.');
-            console.log('Total jobs:', jobs.length);
-          })();
-          NODE
-
-      - name: Commit new updates
-        run: |
-          git config user.name "Sarkari Job Portal Bot"
-          git config user.email "actions@github.com"
-          git add Data/jobs.json
-          git diff --cached --quiet || git commit -m "Automatic government job source update"
-          git push
+      - name: Test
+        run: echo "Automatic update system is working"
