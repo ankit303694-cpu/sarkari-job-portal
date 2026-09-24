@@ -1,0 +1,11 @@
+{
+  "name": "sarkari-job-portal-v7",
+  "version": "7.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3"
+  }
+}
