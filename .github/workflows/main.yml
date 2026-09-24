@@ -95,63 +95,61 @@ jobs:
             return "latest";
           }
 
-          function useful(text, href) {
-  const t = (text + " " + href).toLowerCase();
+                    function useful(text, href) {
+            const t = (text + " " + href).toLowerCase();
 
-  // सामान्य UPSC/navigation pages को छोड़ें
-  const exclude = [
-    "calendar",
-    "previous question papers",
-    "question papers",
-    "cut-off marks",
-    "marks information",
-    "marks of recommended candidates",
-    "specimen question",
-    "common mistakes",
-    "revised syllabus",
-    "representation on question papers",
-    "demo files",
-    "forms for certificates",
-    "view archives",
-    "subscribe",
-    "web advertisement",
-    "career article",
-    "economy",
-    "hindi",
-    "skip to main content"
-  ];
+            const exclude = [
+              "calendar",
+              "previous question papers",
+              "question papers",
+              "cut-off marks",
+              "marks information",
+              "marks of recommended candidates",
+              "specimen question",
+              "common mistakes",
+              "revised syllabus",
+              "representation on question papers",
+              "demo files",
+              "forms for certificates",
+              "view archives",
+              "subscribe",
+              "web advertisement",
+              "career article",
+              "economy",
+              "hindi",
+              "skip to main content"
+            ];
 
-  if (exclude.some(k => t.includes(k))) {
-    return false;
-  }
+            if (exclude.some(k => t.includes(k))) {
+              return false;
+            }
 
-  // भर्ती/नौकरी से जुड़े जरूरी शब्द
-  const include = [
-    "recruitment",
-    "recruit",
-    "vacancy",
-    "vacancies",
-    "advertisement",
-    "advertisements",
-    "advt",
-    "job",
-    "jobs",
-    "application",
-    "applications are invited",
-    "apply online",
-    "online application",
-    "post",
-    "posts",
-    "selection",
-    "notification",
-    "exam",
-    "employment",
-    "hiring",
-    "engagement"
-  ];
+            const include = [
+              "recruitment",
+              "recruit",
+              "vacancy",
+              "vacancies",
+              "advertisement",
+              "advertisements",
+              "advt",
+              "job",
+              "jobs",
+              "application",
+              "applications are invited",
+              "apply online",
+              "online application",
+              "post",
+              "posts",
+              "selection",
+              "notification",
+              "exam",
+              "employment",
+              "hiring",
+              "engagement"
+            ];
 
-  return include.some(k => t.includes(k));
-}
+            return include.some(k => t.includes(k));
+          }
 
           function makeId(url) {
             return crypto
