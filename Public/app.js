@@ -1,3 +1,83 @@
-let t="",q="";const L=document.getElementById("list"),E=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-async function init(){let c=await fetch("/api/monetization").then(r=>r.json());if(c.sponsored?.enabled&&c.sponsored.items?.length)document.getElementById("sponsored").innerHTML="<h2>Sponsored</h2><div class=grid>"+c.sponsored.items.map(x=>`<article class=card><h3>${E(x.title)}</h3><p>${E(x.description||"")}</p><a class=btn target=_blank rel="sponsored noopener" href="${E(x.url)}">जानकारी देखें →</a></article>`).join("")+"</div>";if(c.affiliate?.enabled&&c.affiliate.links?.length)document.getElementById("affiliate").innerHTML="<h2>Recommended Resources</h2><div class=grid>"+c.affiliate.links.map(x=>`<article class=card><h3>${E(x.title)}</h3><p>${E(x.description||"")}</p><a class=btn target=_blank rel="sponsored noopener" href="${E(x.url)}">देखें →</a></article>`).join("")+"</div>";load()}
-async function load(){let d=await fetch("/api/jobs?"+new URLSearchParams({type:t,q})).then(r=>r.json());L.innerHTML=d.length?d.map(x=>`<article class=card><span class=pill>${E(x.type)}</span><h2>${E(x.title)}</h2><p>${E(x.department)}</p><p><b>Last Date:</b> ${E(x.lastDate)}</p><a class=btn href="/job.html?id=${x.id}">पूरी जानकारी →</a></article>`).join(""):"<div class=empty>कोई अपडेट नहीं मिला।</div>"}document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{t=b.dataset.t;load()});document.getElementById("q").oninput=e=>{q=e.target.value;load()};init();
+const search = document.getElementById("search");
+const jobsBox = document.getElementById("jobs");
+const filters = document.querySelectorAll(".filters button");
+
+let currentType = "";
+
+async function loadJobs() {
+  try {
+    const params = new URLSearchParams();
+
+    if (currentType) {
+      params.set("type", currentType);
+    }
+
+    if (search && search.value.trim()) {
+      params.set("q", search.value.trim());
+    }
+
+    const res = await fetch("/api/jobs?" + params.toString());
+    const jobs = await res.json();
+
+    if (!jobsBox) return;
+
+    if (!jobs.length) {
+      jobsBox.innerHTML = "<p>अभी कोई जानकारी उपलब्ध नहीं है।</p>";
+      return;
+    }
+
+    jobsBox.innerHTML = jobs.map(job => `
+      <article class="job-card">
+        <h3>${escapeHtml(job.title || "सरकारी भर्ती")}</h3>
+
+        <p><b>विभाग:</b> ${escapeHtml(job.department || job.sourceName || "सरकारी विभाग")}</p>
+
+        <p><b>प्रकार:</b> ${typeName(job.type)}</p>
+
+        <p><b>अंतिम तिथि:</b> ${escapeHtml(job.lastDate || "आधिकारिक सूचना देखें")}</p>
+
+        <a href="/job.html?id=${encodeURIComponent(job.id)}">
+          पूरी जानकारी →
+        </a>
+      </article>
+    `).join("");
+
+  } catch (error) {
+    if (jobsBox) {
+      jobsBox.innerHTML = "<p>जानकारी लोड नहीं हो सकी। थोड़ी देर बाद फिर प्रयास करें।</p>";
+    }
+  }
+}
+
+function typeName(type) {
+  const names = {
+    latest: "नई भर्ती",
+    admit_card: "Admit Card",
+    answer_key: "Answer Key",
+    result: "Result"
+  };
+
+  return names[type] || "सरकारी परीक्षा";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+filters.forEach(button => {
+  button.addEventListener("click", () => {
+    currentType = button.dataset.type || "";
+    loadJobs();
+  });
+});
+
+if (search) {
+  search.addEventListener("input", loadJobs);
+}
+
+loadJobs();
