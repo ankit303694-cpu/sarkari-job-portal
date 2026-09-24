@@ -21,12 +21,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run government job update
+      - name: Run Government Job Update
         env:
           NODE_OPTIONS: --no-warnings
         run: |
           node <<'EOF'
           const fs = require("fs");
+          const crypto = require("crypto");
 
           const sources = [
             {
@@ -35,7 +36,7 @@ jobs:
             },
             {
               name: "UPSC",
-              url: "https://upsc.gov.in/"
+              url: "https://www.upsc.gov.in/recruitment/recruitment-advertisement"
             },
             {
               name: "Railway",
@@ -43,7 +44,7 @@ jobs:
             },
             {
               name: "Employment News",
-              url: "https://employmentnews.gov.in/"
+              url: "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All"
             }
           ];
 
@@ -58,12 +59,19 @@ jobs:
             jobs = [];
           }
 
+          function cleanText(text) {
+            return text
+              .replace(/\s+/g, " ")
+              .replace(/&nbsp;/gi, " ")
+              .trim();
+          }
+
           function classify(text) {
             const t = text.toLowerCase();
 
             if (
               t.includes("admit card") ||
-              t.includes("admitcard") ||
+              t.includes("admit-card") ||
               t.includes("hall ticket")
             ) {
               return "admit_card";
@@ -71,14 +79,15 @@ jobs:
 
             if (
               t.includes("answer key") ||
-              t.includes("answerkey")
+              t.includes("answer-key")
             ) {
               return "answer_key";
             }
 
             if (
               t.includes("result") ||
-              t.includes("merit list")
+              t.includes("final result") ||
+              t.includes("written result")
             ) {
               return "result";
             }
@@ -86,43 +95,55 @@ jobs:
             return "latest";
           }
 
-          function extractLinks(html, baseUrl) {
-            const result = [];
-            const regex = /<a[^>]+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gis;
+          function useful(text, href) {
+            const t = (text + " " + href).toLowerCase();
 
-            let match;
+            const keywords = [
+              "recruit",
+              "vacancy",
+              "notification",
+              "advertisement",
+              "advt",
+              "exam",
+              "application",
+              "apply",
+              "admit",
+              "answer",
+              "result",
+              "selection",
+              "post",
+              "job",
+              "career",
+              "vacancies"
+            ];
 
-            while ((match = regex.exec(html)) !== null) {
-              let href = match[1];
-              let text = match[2]
-                .replace(/<[^>]*>/g, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+            return keywords.some(k => t.includes(k));
+          }
 
-              if (!text || text.length < 5) continue;
+          function makeId(url) {
+            return crypto
+              .createHash("sha1")
+              .update(url)
+              .digest("hex")
+              .substring(0, 16);
+          }
 
-              try {
-                href = new URL(href, baseUrl).href;
-              } catch {
-                continue;
-              }
-
-              result.push({
-                url: href,
-                text
-              });
+          function absoluteUrl(base, href) {
+            try {
+              return new URL(href, base).href;
+            } catch {
+              return null;
             }
-
-            return result;
           }
 
           async function fetchSource(source) {
-            try {
-              console.log("Checking:", source.name);
+            console.log("Checking:", source.name);
 
+            try {
               const response = await fetch(source.url, {
                 headers: {
-                  "User-Agent": "SarkariJobPortal-AutoUpdate/1.0"
+                  "User-Agent":
+                    "Mozilla/5.0 GovernmentJobPortal/1.0"
                 }
               });
 
@@ -137,33 +158,46 @@ jobs:
 
               const html = await response.text();
 
-              return extractLinks(html, source.url)
-                .filter(x => {
-                  const text = x.text.toLowerCase();
+              const found = [];
 
-                  return (
-                    text.includes("recruit") ||
-                    text.includes("vacancy") ||
-                    text.includes("job") ||
-                    text.includes("result") ||
-                    text.includes("admit") ||
-                    text.includes("answer key") ||
-                    text.includes("notification") ||
-                    text.includes("exam")
-                  );
-                })
-                .slice(0, 30)
-                .map(x => ({
-                  ...x,
-                  source: source.name
-                }));
+              const regex =
+                /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
 
+              let match;
+
+              while ((match = regex.exec(html)) !== null) {
+                const href = absoluteUrl(
+                  source.url,
+                  match[1]
+                );
+
+                if (!href) continue;
+
+                const text = cleanText(
+                  match[2]
+                    .replace(/<[^>]*>/g, " ")
+                );
+
+                if (!text) continue;
+
+                if (text.length < 5) continue;
+
+                if (!useful(text, href)) continue;
+
+                found.push({
+                  title: text.substring(0, 180),
+                  url: href
+                });
+              }
+
+              return found;
             } catch (error) {
               console.log(
                 "ERROR:",
                 source.name,
                 error.message
               );
+
               return [];
             }
           }
@@ -172,50 +206,50 @@ jobs:
             let added = 0;
 
             for (const source of sources) {
-              const links = await fetchSource(source);
+              const items = await fetchSource(source);
 
-              for (const item of links) {
+              console.log(
+                source.name,
+                "items:",
+                items.length
+              );
+
+              for (const item of items) {
+                const id = "auto-" + makeId(item.url);
+
                 const exists = jobs.some(
-                  job => job.sourceUrl === item.url
+                  j =>
+                    j.id === id ||
+                    j.notificationUrl === item.url ||
+                    j.sourceUrl === item.url
                 );
 
                 if (exists) continue;
 
-                const type = classify(item.text);
+                const type = classify(item.title);
 
                 jobs.push({
-                  id:
-                    "auto-" +
-                    Date.now() +
-                    "-" +
-                    Math.random()
-                      .toString(36)
-                      .substring(2, 8),
-
-                  title: item.text.substring(0, 180),
-
-                  department: item.source,
-
-                  type: type,
-
+                  id,
+                  title: item.title,
+                  department: source.name,
+                  type,
                   vacancy: "See official notification",
-
                   lastDate: "See official notification",
-
                   notificationUrl: item.url,
-
-                  sourceName: item.source,
-
                   sourceUrl: item.url,
-
+                  sourceName: source.name,
                   status: "pending_verification",
-
                   verified: false,
-
                   fetchedAt: new Date().toISOString()
                 });
 
                 added++;
+
+                console.log(
+                  "Added:",
+                  source.name,
+                  item.title
+                );
               }
             }
 
@@ -224,17 +258,29 @@ jobs:
               JSON.stringify(jobs, null, 2) + "\n"
             );
 
-            console.log("Total jobs:", jobs.length);
-            console.log("New jobs:", added);
+            console.log(
+              "--------------------------------"
+            );
+
+            console.log(
+              "Total jobs:",
+              jobs.length
+            );
+
+            console.log(
+              "New jobs:",
+              added
+            );
+
+            console.log(
+              "--------------------------------"
+            );
           }
 
-          main().catch(error => {
-            console.error(error);
-            process.exit(1);
-          });
+          main();
           EOF
 
-      - name: Commit updated jobs
+      - name: Save updated jobs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -242,7 +288,7 @@ jobs:
           git add Data/jobs.json
 
           if git diff --cached --quiet; then
-            echo "No new jobs found."
+            echo "No new government jobs found."
             exit 0
           fi
 
