@@ -2,12 +2,249 @@ name: Automatic Government Job Update
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
+  schedule:
+    - cron: "0 */6 * * *"
+
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  test:
+  update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Test
-        run: echo "Automatic update system is working"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run government job update
+        env:
+          NODE_OPTIONS: --no-warnings
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const sources = [
+            {
+              name: "SSC",
+              url: "https://ssc.gov.in/"
+            },
+            {
+              name: "UPSC",
+              url: "https://upsc.gov.in/"
+            },
+            {
+              name: "Railway",
+              url: "https://www.rrbapply.gov.in/"
+            },
+            {
+              name: "Employment News",
+              url: "https://employmentnews.gov.in/"
+            }
+          ];
+
+          const file = "Data/jobs.json";
+
+          let jobs = [];
+
+          try {
+            jobs = JSON.parse(fs.readFileSync(file, "utf8"));
+            if (!Array.isArray(jobs)) jobs = [];
+          } catch {
+            jobs = [];
+          }
+
+          function classify(text) {
+            const t = text.toLowerCase();
+
+            if (
+              t.includes("admit card") ||
+              t.includes("admitcard") ||
+              t.includes("hall ticket")
+            ) {
+              return "admit_card";
+            }
+
+            if (
+              t.includes("answer key") ||
+              t.includes("answerkey")
+            ) {
+              return "answer_key";
+            }
+
+            if (
+              t.includes("result") ||
+              t.includes("merit list")
+            ) {
+              return "result";
+            }
+
+            return "latest";
+          }
+
+          function extractLinks(html, baseUrl) {
+            const result = [];
+            const regex = /<a[^>]+href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gis;
+
+            let match;
+
+            while ((match = regex.exec(html)) !== null) {
+              let href = match[1];
+              let text = match[2]
+                .replace(/<[^>]*>/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+
+              if (!text || text.length < 5) continue;
+
+              try {
+                href = new URL(href, baseUrl).href;
+              } catch {
+                continue;
+              }
+
+              result.push({
+                url: href,
+                text
+              });
+            }
+
+            return result;
+          }
+
+          async function fetchSource(source) {
+            try {
+              console.log("Checking:", source.name);
+
+              const response = await fetch(source.url, {
+                headers: {
+                  "User-Agent": "SarkariJobPortal-AutoUpdate/1.0"
+                }
+              });
+
+              if (!response.ok) {
+                console.log(
+                  source.name,
+                  "HTTP",
+                  response.status
+                );
+                return [];
+              }
+
+              const html = await response.text();
+
+              return extractLinks(html, source.url)
+                .filter(x => {
+                  const text = x.text.toLowerCase();
+
+                  return (
+                    text.includes("recruit") ||
+                    text.includes("vacancy") ||
+                    text.includes("job") ||
+                    text.includes("result") ||
+                    text.includes("admit") ||
+                    text.includes("answer key") ||
+                    text.includes("notification") ||
+                    text.includes("exam")
+                  );
+                })
+                .slice(0, 30)
+                .map(x => ({
+                  ...x,
+                  source: source.name
+                }));
+
+            } catch (error) {
+              console.log(
+                "ERROR:",
+                source.name,
+                error.message
+              );
+              return [];
+            }
+          }
+
+          async function main() {
+            let added = 0;
+
+            for (const source of sources) {
+              const links = await fetchSource(source);
+
+              for (const item of links) {
+                const exists = jobs.some(
+                  job => job.sourceUrl === item.url
+                );
+
+                if (exists) continue;
+
+                const type = classify(item.text);
+
+                jobs.push({
+                  id:
+                    "auto-" +
+                    Date.now() +
+                    "-" +
+                    Math.random()
+                      .toString(36)
+                      .substring(2, 8),
+
+                  title: item.text.substring(0, 180),
+
+                  department: item.source,
+
+                  type: type,
+
+                  vacancy: "See official notification",
+
+                  lastDate: "See official notification",
+
+                  notificationUrl: item.url,
+
+                  sourceName: item.source,
+
+                  sourceUrl: item.url,
+
+                  status: "pending_verification",
+
+                  verified: false,
+
+                  fetchedAt: new Date().toISOString()
+                });
+
+                added++;
+              }
+            }
+
+            fs.writeFileSync(
+              file,
+              JSON.stringify(jobs, null, 2) + "\n"
+            );
+
+            console.log("Total jobs:", jobs.length);
+            console.log("New jobs:", added);
+          }
+
+          main().catch(error => {
+            console.error(error);
+            process.exit(1);
+          });
+          EOF
+
+      - name: Commit updated jobs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add Data/jobs.json
+
+          if git diff --cached --quiet; then
+            echo "No new jobs found."
+            exit 0
+          fi
+
+          git commit -m "Automatic government job update"
+          git push
