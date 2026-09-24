@@ -1,13 +1,9 @@
+
 name: Automatic Government Job Update
 
 on:
-  push:
-    branches:
-      - main
-
   schedule:
     - cron: "0 */6 * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -37,9 +33,9 @@ jobs:
               url: "https://www.upsc.gov.in/recruitment/recruitment-advertisement"
             },
             {
-  name: "Railway",
-  url: "https://www.rrbpatna.gov.in/"
-},
+              name: "Railway",
+              url: "https://www.rrbpatna.gov.in/"
+            },
             {
               name: "Employment News",
               url: "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All"
@@ -68,75 +64,43 @@ jobs:
           function classify(text) {
             const t = text.toLowerCase();
 
-            if (
-              t.includes("admit card") ||
-              t.includes("admit-card") ||
-              t.includes("hall ticket")
-            ) return "admit_card";
+            if (t.includes("admit card") || t.includes("hall ticket")) {
+              return "admit_card";
+            }
 
-            if (
-              t.includes("answer key") ||
-              t.includes("answer-key")
-            ) return "answer_key";
+            if (t.includes("answer key")) {
+              return "answer_key";
+            }
 
-            if (
-              t.includes("result") ||
-              t.includes("final result") ||
-              t.includes("written result")
-            ) return "result";
+            if (t.includes("result")) {
+              return "result";
+            }
 
             return "latest";
           }
 
-          function isUseful(title, href) {
-            const t = (title + " " + href).toLowerCase();
+          function useful(text, href) {
+            const t = (text + " " + href).toLowerCase();
 
-            const badWords = [
-              "skip to main",
-              "skip to content",
-              "home",
-              "login",
-              "logout",
-              "register",
-              "contact us",
-              "privacy policy",
-              "terms",
-              "accessibility",
-              "sitemap",
-              "menu",
-              "search"
-            ];
-
-            if (badWords.some(x => t === x || t.includes(x))) {
-              return false;
-            }
-
-            const goodWords = [
+            const keywords = [
               "recruit",
-              "recruitment",
               "vacancy",
-              "vacancies",
               "notification",
               "advertisement",
               "advt",
               "exam",
               "application",
               "apply",
-              "admit card",
-              "admit-card",
-              "answer key",
-              "answer-key",
+              "admit",
+              "answer",
               "result",
               "selection",
-              "job",
               "post",
-              "posts",
-              "career",
-              "engagement",
-              "appointment"
+              "job",
+              "career"
             ];
 
-            return goodWords.some(x => t.includes(x));
+            return keywords.some(k => t.includes(k));
           }
 
           function makeId(url) {
@@ -161,17 +125,12 @@ jobs:
             try {
               const response = await fetch(source.url, {
                 headers: {
-                  "User-Agent":
-                    "Mozilla/5.0 GovernmentJobPortal/1.0"
+                  "User-Agent": "Mozilla/5.0 GovernmentJobPortal/1.0"
                 }
               });
 
               if (!response.ok) {
-                console.log(
-                  source.name,
-                  "HTTP",
-                  response.status
-                );
+                console.log(source.name, "HTTP", response.status);
                 return [];
               }
 
@@ -184,103 +143,53 @@ jobs:
               let match;
 
               while ((match = regex.exec(html)) !== null) {
-                const href = absoluteUrl(
-                  source.url,
-                  match[1]
-                );
+                const href = absoluteUrl(source.url, match[1]);
 
                 if (!href) continue;
 
-                const title = cleanText(match[2]);
+                const text = cleanText(match[2]);
 
-                if (!title) continue;
-                if (title.length < 8) continue;
-                if (title.length > 180) continue;
-
-                if (!isUseful(title, href)) continue;
+                if (text.length < 5) continue;
+                if (!useful(text, href)) continue;
 
                 found.push({
-                  title,
+                  title: text.substring(0, 180),
                   url: href
                 });
               }
 
               return found;
-
             } catch (error) {
-              console.log(
-                "ERROR:",
-                source.name,
-                error.message
-              );
-
+              console.log("ERROR:", source.name, error.message);
               return [];
             }
           }
 
           async function main() {
-
-            /*
-             * पुराने automatic generic junk entries हटाएँ।
-             * Published/manual jobs को नहीं छेड़ेंगे।
-             */
-            jobs = jobs.filter(j => {
-              if (!j.id || !j.id.startsWith("auto-")) {
-                return true;
-              }
-
-              const title = String(j.title || "").toLowerCase();
-
-              const bad = [
-                "skip to main",
-                "skip to content",
-                "home",
-                "login",
-                "logout",
-                "register",
-                "contact us",
-                "privacy policy",
-                "terms",
-                "accessibility",
-                "sitemap",
-                "menu",
-                "search"
-              ];
-
-              return !bad.some(x => title.includes(x));
-            });
-
             let added = 0;
 
             for (const source of sources) {
-
               const items = await fetchSource(source);
 
-              console.log(
-                source.name,
-                "items:",
-                items.length
-              );
+              console.log(source.name, "items:", items.length);
 
               for (const item of items) {
-
                 const id = "auto-" + makeId(item.url);
 
-                const exists = jobs.some(j =>
-                  j.id === id ||
-                  j.notificationUrl === item.url ||
-                  j.sourceUrl === item.url
+                const exists = jobs.some(
+                  j =>
+                    j.id === id ||
+                    j.notificationUrl === item.url ||
+                    j.sourceUrl === item.url
                 );
 
                 if (exists) continue;
-
-                const type = classify(item.title);
 
                 jobs.push({
                   id,
                   title: item.title,
                   department: source.name,
-                  type,
+                  type: classify(item.title),
                   vacancy: "See official notification",
                   lastDate: "See official notification",
                   notificationUrl: item.url,
@@ -292,12 +201,6 @@ jobs:
                 });
 
                 added++;
-
-                console.log(
-                  "Added:",
-                  source.name,
-                  item.title
-                );
               }
             }
 
@@ -306,10 +209,8 @@ jobs:
               JSON.stringify(jobs, null, 2) + "\n"
             );
 
-            console.log("--------------------------------");
             console.log("Total jobs:", jobs.length);
             console.log("New jobs:", added);
-            console.log("--------------------------------");
           }
 
           main();
@@ -323,9 +224,9 @@ jobs:
           git add Data/jobs.json
 
           if git diff --cached --quiet; then
-            echo "No changes."
+            echo "No new government jobs found."
             exit 0
           fi
 
-          git commit -m "Improve automatic government job filtering"
+          git commit -m "Automatic government job update"
           git push
