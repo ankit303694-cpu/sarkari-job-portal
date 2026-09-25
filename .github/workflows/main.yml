@@ -156,6 +156,10 @@ jobs:
                 if (!href) continue;
 
                 const text = cleanText(match[2]);
+                if (
+                 source.name === "Railway" &&
+                 !/ntpc|non[- ]?technical/i.test(text + " " + href)
+                 ) continue;
 
                 if (text.length < 5) continue;
                 if (!useful(text, href)) continue;
