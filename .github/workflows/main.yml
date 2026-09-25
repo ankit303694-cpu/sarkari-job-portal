@@ -34,8 +34,8 @@ jobs:
             },
             {
               name: "Railway",
-              url:
-             "https://www.rrbcdg.gov.in/employment-notices.php"
+              url: 
+              "https://www.rrbcdg.gov.in/"
              },
             {
               name: "Employment News",
@@ -100,7 +100,10 @@ jobs:
             "job",
             "career",
             "employment",
-            "cen"
+            "cen",
+            "ntpc",
+            "rrb",
+            "railway"
             ];
 
             return keywords.some(k => t.includes(k));
