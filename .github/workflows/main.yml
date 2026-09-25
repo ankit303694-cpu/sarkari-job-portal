@@ -32,7 +32,7 @@ jobs:
               name: "UPSC",
               url: "https://www.upsc.gov.in/recruitment/recruitment-advertisement"
             },
-            {
+            
               {
                 name: "Railway",
                  url: 
