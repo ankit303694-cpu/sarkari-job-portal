@@ -33,9 +33,10 @@ jobs:
               url: "https://www.upsc.gov.in/recruitment/recruitment-advertisement"
             },
             {
-              name: "Railway",
-              url: 
-              "https://www.rrbcdg.gov.in/"
+              {
+                name: "Railway",
+                 url: 
+                 "https://www.rrbcdg.gov.in/employment-notices.php"
              },
             {
               name: "Employment News",
