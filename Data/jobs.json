@@ -840,5 +840,16 @@
     "status": "pending_verification",
     "verified": false,
     "fetchedAt": "2026-09-25T03:25:44.444Z"
+  },
+  {
+    "id": "auto-366bf0dd7c4820ca",
+    "title": "(843.66 KB)",
+    "url": "https://www.upsc.gov.in/sites/default/files/AdvtNo-12-2026-Engl-250926_0.pdf",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-09-25T18:09:13.843Z"
   }
 ]
