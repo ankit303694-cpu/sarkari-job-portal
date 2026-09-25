@@ -35,9 +35,8 @@ jobs:
             
               
                 {
-                 name: "Railway",
-                 url: 
-                 "https://www.rrbbbs.gov.in/notifications.php"
+               name: "Railway",
+               url: "https://www.rrbcdg.gov.in/employment-notices.php"
              },
             {
               name: "Employment News",
