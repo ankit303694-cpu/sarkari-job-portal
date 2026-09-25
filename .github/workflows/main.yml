@@ -84,23 +84,23 @@ jobs:
             const t = (text + " " + href).toLowerCase();
 
             const keywords = [
-              "recruit",
-              "vacancy",
-              "notification",
-              "advertisement",
-              "advt",
-              "exam",
-              "application",
-              "apply",
-              "admit",
-              "answer",
-              "result",
-              "selection",
-              "post",
-              "job",
-              "career"
-              "employment",
-              "CEN",
+             "recruit",
+             "vacancy",
+             "notification",
+             "advertisement",
+             "advt",
+             "exam",
+             "application",
+            "apply",
+            "admit",
+            "answer",
+            "result",
+            "selection",
+            "post",
+            "job",
+            "career",
+            "employment",
+            "cen"
             ];
 
             return keywords.some(k => t.includes(k));
