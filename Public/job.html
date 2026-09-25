@@ -1,1 +1,163 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Job Details</title><link rel="stylesheet" href="/style.css"></head><body><header><div class="wrap nav"><a class=logo href="/">Sarkari Job Portal</a></div></header><main class=wrap><div class=adbox>Advertisement</div><div id=j class=detail></div></main><script>let id=new URLSearchParams(location.search).get("id");fetch("/api/jobs/"+id).then(r=>r.json()).then(x=>{j.innerHTML=`<span class=pill>${x.type}</span><h1>${x.title}</h1><p><b>विभाग:</b> ${x.department}</p><p><b>Vacancy:</b> ${x.vacancy}</p><p><b>Last Date:</b> ${x.lastDate}</p><a class=btn target=_blank href="${x.notificationUrl}">Official Notification ↗</a>`})</script></body></html>
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Job Details | Sarkari Job Portal</title>
+<meta name="description" content="सरकारी नौकरी की पूरी जानकारी, विभाग, vacancy, last date और official notification।">
+<meta name="robots" content="index, follow">
+
+<link rel="canonical" id="canonical" href="https://sarkari-job-portal-a54b.onrender.com/job.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" id="ogTitle" content="Job Details | Sarkari Job Portal">
+<meta property="og:description" id="ogDescription" content="सरकारी नौकरी की पूरी जानकारी और official notification।">
+<meta property="og:url" id="ogUrl" content="https://sarkari-job-portal-a54b.onrender.com/job.html">
+
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/">Sarkari Job Portal</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="adbox">Advertisement</div>
+
+  <article id="j" class="detail">
+    <p>Job details loading...</p>
+  </article>
+
+</main>
+
+<script>
+const id = new URLSearchParams(location.search).get("id");
+const box = document.getElementById("j");
+
+function text(value) {
+  return value == null || value === "" ? "Not available" : String(value);
+}
+
+if (!id) {
+  box.innerHTML = "<h1>Job not found</h1><p>Job ID उपलब्ध नहीं है।</p>";
+} else {
+
+  fetch("/api/jobs/" + encodeURIComponent(id))
+    .then(response => {
+      if (!response.ok) throw new Error("Job not found");
+      return response.json();
+    })
+    .then(x => {
+
+      const title = text(x.title);
+      const department = text(x.department);
+      const vacancy = text(x.vacancy);
+      const lastDate = text(x.lastDate);
+      const type = text(x.type);
+
+      document.title = title + " | Sarkari Job Portal";
+
+      document.querySelector('meta[name="description"]').setAttribute(
+        "content",
+        title + " की सरकारी नौकरी की जानकारी, vacancy, last date और official notification."
+      );
+
+      document.getElementById("ogTitle").setAttribute(
+        "content",
+        title + " | Sarkari Job Portal"
+      );
+
+      document.getElementById("ogDescription").setAttribute(
+        "content",
+        title + " की पूरी सरकारी नौकरी जानकारी और official notification."
+      );
+
+      const pageUrl = window.location.href;
+      document.getElementById("canonical").setAttribute("href", pageUrl);
+      document.getElementById("ogUrl").setAttribute("content", pageUrl);
+
+      box.innerHTML = "";
+
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = type;
+
+      const h1 = document.createElement("h1");
+      h1.textContent = title;
+
+      const p1 = document.createElement("p");
+      p1.innerHTML = "<b>विभाग:</b> ";
+      p1.appendChild(document.createTextNode(department));
+
+      const p2 = document.createElement("p");
+      p2.innerHTML = "<b>Vacancy:</b> ";
+      p2.appendChild(document.createTextNode(vacancy));
+
+      const p3 = document.createElement("p");
+      p3.innerHTML = "<b>Last Date:</b> ";
+      p3.appendChild(document.createTextNode(lastDate));
+
+      box.appendChild(pill);
+      box.appendChild(h1);
+      box.appendChild(p1);
+      box.appendChild(p2);
+      box.appendChild(p3);
+
+      if (x.notificationUrl) {
+        const a = document.createElement("a");
+        a.className = "btn";
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.href = x.notificationUrl;
+        a.textContent = "Official Notification ↗";
+        box.appendChild(a);
+      }
+
+      /*
+       * JobPosting schema तभी बनाया जाएगा जब जरूरी
+       * structured-data fields उपलब्ध हों।
+       * कोई तारीख/स्थान अनुमान से नहीं बनाया जाएगा।
+       */
+      if (
+        x.datePosted &&
+        x.description &&
+        x.hiringOrganization &&
+        x.jobLocation
+      ) {
+
+        const schema = {
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          "title": x.title,
+          "description": x.description,
+          "datePosted": x.datePosted,
+          "hiringOrganization": x.hiringOrganization,
+          "jobLocation": x.jobLocation
+        };
+
+        if (x.validThrough) {
+          schema.validThrough = x.validThrough;
+        }
+
+        const script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+      }
+
+    })
+    .catch(() => {
+      box.innerHTML =
+        "<h1>Job not found</h1><p>यह job अभी उपलब्ध नहीं है।</p>";
+    });
+}
+</script>
+
+</body>
+</html>
