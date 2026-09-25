@@ -67,6 +67,37 @@ app.post("/api/jobs/:id/reject",auth,(req,res)=>{
   write("jobs.json",jobs); res.json(j);
 });
 
+app.get("/sitemap.xml", (req, res) => {
+  const SITE_URL =
+    process.env.SITE_URL ||
+    "https://sarkari-job-portal-a54b.onrender.com";
+
+  const jobs = read("jobs.json", []).filter(
+    j => j.verified || j.status === "published"
+  );
+
+  const urls = [
+    `${SITE_URL}/`,
+    `${SITE_URL}/job.html`
+  ];
+
+  jobs.forEach(j => {
+    if (j.id) {
+      urls.push(
+        `${SITE_URL}/job.html?id=${encodeURIComponent(j.id)}`
+      );
+    }
+  });
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(url => `  <url><loc>${url}</loc></url>`)
+  .join("\n")}
+</urlset>`;
+
+  res.type("application/xml").send(xml);
+});
 app.get("*",(req,res)=>{
   if(req.path.startsWith("/api/") || req.path==="/health") return res.status(404).end();
   res.sendFile(path.join(PUBLIC,"index.html"));
