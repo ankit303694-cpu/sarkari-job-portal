@@ -852,4 +852,21 @@
     "autoUpdated": true,
     "updatedAt": "2026-09-25T18:09:13.843Z"
   }
+  ,
+{
+  "id": "ssc-je-2026-scientific-assistant-imd",
+  "title": "Scientific Assistant (IMD) through SSC JE Examination 2026",
+  "department": "India Meteorological Department (IMD)",
+  "category": "SSC",
+  "type": "latest",
+  "vacancy": "To be announced",
+  "lastDate": "22-09-2026",
+  "notificationUrl": "https://ssc.gov.in/",
+  "sourceUrl": "https://ssc.gov.in/",
+  "sourceName": "SSC",
+  "status": "published",
+  "verified": true,
+  "fetchedAt": "2026-09-27T00:00:00.000Z",
+  "updatedAt": "2026-09-27T00:00:00.000Z"
+}
 ]
