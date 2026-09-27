@@ -7,7 +7,7 @@
     "type": "latest",
     "vacancy": "See official notification",
     "lastDate": "See official notification",
-    "notificationUrl": "https://ssc.gov.in/",
+    "notificationUrl": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_adv_je_2026.pdf"
     "sourceUrl": "https://ssc.gov.in/",
     "sourceName": "SSC",
     "status": "published",
@@ -861,7 +861,7 @@
   "type": "latest",
   "vacancy": "To be announced",
   "lastDate": "22-09-2026",
-  "notificationUrl": "https://ssc.gov.in/",
+  "notificationUrl": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_adv_je_2026.pdf",
   "sourceUrl": "https://ssc.gov.in/",
   "sourceName": "SSC",
   "status": "published",
