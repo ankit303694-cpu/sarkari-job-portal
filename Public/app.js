@@ -1,83 +1,48 @@
 const search = document.getElementById("search");
-const jobsBox = document.getElementById("jobs");
-const filters = document.querySelectorAll(".filters button");
+const searchBtn = document.getElementById("searchBtn");
+const boxes = {
+  latest: document.getElementById("latest-list"),
+  result: document.getElementById("result-list"),
+  admit_card: document.getElementById("admit-list"),
+  answer_key: document.getElementById("answer-list")
+};
+let allJobs = [];
 
-let currentType = "";
-
-async function loadJobs() {
-  try {
-    const params = new URLSearchParams();
-
-    if (currentType) {
-      params.set("type", currentType);
-    }
-
-    if (search && search.value.trim()) {
-      params.set("q", search.value.trim());
-    }
-
-    const res = await fetch("/api/jobs?" + params.toString());
-    const jobs = await res.json();
-
-    if (!jobsBox) return;
-
-    if (!jobs.length) {
-      jobsBox.innerHTML = "<p>अभी कोई जानकारी उपलब्ध नहीं है।</p>";
-      return;
-    }
-
-    jobsBox.innerHTML = jobs.map(job => `
-      <article class="job-card">
-        <h3>${escapeHtml(job.title || "सरकारी भर्ती")}</h3>
-
-        <p><b>विभाग:</b> ${escapeHtml(job.department || job.sourceName || "सरकारी विभाग")}</p>
-
-        <p><b>प्रकार:</b> ${typeName(job.type)}</p>
-
-        <p><b>अंतिम तिथि:</b> ${escapeHtml(job.lastDate || "आधिकारिक सूचना देखें")}</p>
-
-        <a href="/job.html?id=${encodeURIComponent(job.id)}">
-          पूरी जानकारी →
-        </a>
-      </article>
-    `).join("");
-
-  } catch (error) {
-    if (jobsBox) {
-      jobsBox.innerHTML = "<p>जानकारी लोड नहीं हो सकी। थोड़ी देर बाद फिर प्रयास करें।</p>";
-    }
+function esc(v){return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function typeKey(job){
+  const t=String(job.type||job.category||"").toLowerCase().replaceAll("-","_");
+  if(t.includes("result")) return "result";
+  if(t.includes("admit")) return "admit_card";
+  if(t.includes("answer")) return "answer_key";
+  return "latest";
+}
+function item(job){
+  const date=job.lastDate && job.lastDate !== "See official notification" ? `अंतिम तिथि: ${esc(job.lastDate)}` : esc(job.department||job.sourceName||"");
+  return `<div class="job-item"><a href="/job.html?id=${encodeURIComponent(job.id)}">${esc(job.title||"सरकारी अपडेट")}</a><div class="job-meta">${date}</div></div>`;
+}
+function render(){
+  const q=(search?.value||"").trim().toLowerCase();
+  const jobs=allJobs.filter(j=>!q || [j.title,j.department,j.category,j.sourceName,j.type].join(" ").toLowerCase().includes(q));
+  Object.values(boxes).forEach(b=>{if(b)b.innerHTML="<div class=\"empty\">अभी कोई जानकारी उपलब्ध नहीं है।</div>"});
+  const groups={latest:[],result:[],admit_card:[],answer_key:[]};
+  jobs.forEach(j=>groups[typeKey(j)].push(j));
+  Object.keys(groups).forEach(k=>{if(boxes[k]) boxes[k].innerHTML=groups[k].length?groups[k].slice(0,8).map(item).join(""):"<div class=\"empty\">अभी कोई जानकारी उपलब्ध नहीं है।</div>"});
+  const first=jobs[0];
+  document.getElementById("tickerText").textContent=first?`नई अपडेट: ${first.title}`:"नई सरकारी नौकरी और परीक्षा अपडेट यहां दिखाई जाएंगी।";
+}
+async function loadJobs(){
+  try{
+    const res=await fetch("/api/jobs");
+    if(!res.ok) throw new Error("API error");
+    const data=await res.json();
+    allJobs=Array.isArray(data)?data:[];
+    render();
+  }catch(e){
+    allJobs=[];
+    render();
+    document.getElementById("tickerText").textContent="जानकारी लोड नहीं हो सकी। थोड़ी देर बाद फिर प्रयास करें।";
   }
 }
-
-function typeName(type) {
-  const names = {
-    latest: "नई भर्ती",
-    admit_card: "Admit Card",
-    answer_key: "Answer Key",
-    result: "Result"
-  };
-
-  return names[type] || "सरकारी परीक्षा";
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-filters.forEach(button => {
-  button.addEventListener("click", () => {
-    currentType = button.dataset.type || "";
-    loadJobs();
-  });
-});
-
-if (search) {
-  search.addEventListener("input", loadJobs);
-}
-
+search?.addEventListener("input",render);
+searchBtn?.addEventListener("click",render);
 loadJobs();
