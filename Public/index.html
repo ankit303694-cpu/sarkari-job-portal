@@ -1,59 +1,115 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sarkari Job Portal – सरकारी नौकरी, Admit Card, Result</title>
-
-<meta name="description" content="सरकारी नौकरी, Admit Card, Answer Key और Result की जानकारी एक जगह।">
-
-<!-- Google Search Console Verification -->
-<meta name="google-site-verification" content="WyFrv3P8oWPtoQDsavLvM87UXuxhIaDEsF3pf5MH9-w" />
-<link rel="canonical" href="https://sarkari-job-portal-a54b.onrender.com/">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Sarkari Job Portal - सरकारी नौकरी, Admit Card, Result">
-<meta property="og:description" content="सरकारी नौकरी, भर्ती, Admit Card, Answer Key और Result की जानकारी।">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://sarkari-job-portal-a54b.onrender.com/">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sarkari Job Portal – सरकारी नौकरी, Result, Admit Card</title>
+  <meta name="description" content="सरकारी नौकरी, भर्ती, Result, Admit Card, Answer Key और परीक्षा की जानकारी एक जगह।">
+  <meta name="google-site-verification" content="WyFrv3P8oWPtoQDsavLvM87UXuxhIaDEsF3pf5MH9-w">
+  <link rel="canonical" href="https://sarkari-job-portal-a54b.onrender.com/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Sarkari Job Portal - सरकारी नौकरी, Result, Admit Card">
+  <meta property="og:description" content="सरकारी नौकरी, भर्ती, Result, Admit Card और Answer Key की जानकारी।">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sarkari-job-portal-a54b.onrender.com/">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <header class="site-header">
+    <div class="top-wrap">
+      <a class="brand" href="/">Sarkari Job Portal<span>सरकारी नौकरी • Result • Admit Card</span></a>
+      <a class="admin-link" href="admin.html">Admin</a>
+    </div>
+    <nav class="main-nav" aria-label="मुख्य मेनू">
+      <a href="#latest">Latest Jobs</a>
+      <a href="#result">Result</a>
+      <a href="#admit">Admit Card</a>
+      <a href="#answer">Answer Key</a>
+      <a href="#syllabus">Syllabus</a>
+      <a href="#admission">Admission</a>
+    </nav>
+  </header>
 
-<header>
-  <h1>Sarkari Job Portal</h1>
-  <p>Government Jobs • Results</p>
-  <a href="admin.html">Admin</a>
-</header>
+  <main class="page-wrap">
+    <section class="hero">
+      <div>
+        <h1>सरकारी नौकरी और परीक्षा की ताजा जानकारी</h1>
+        <p>Latest Jobs, Result, Admit Card, Answer Key और अन्य अपडेट एक ही जगह।</p>
+      </div>
+      <form class="search-box" onsubmit="return false">
+        <input id="search" type="search" placeholder="🔎 नौकरी / परीक्षा / विभाग खोजें..." autocomplete="off">
+        <button type="button" id="searchBtn">Search</button>
+      </form>
+    </section>
 
-<main>
+    <div class="ticker"><strong>लेटेस्ट अपडेट:</strong><span id="tickerText">नई सरकारी नौकरी और परीक्षा अपडेट यहां दिखाई जाएंगी।</span></div>
 
-  <h2>सरकारी नौकरी की पूरी जानकारी</h2>
+    <div class="quick-links">
+      <a class="ql red" href="#latest">नई भर्ती</a>
+      <a class="ql green" href="#result">Result</a>
+      <a class="ql blue" href="#admit">Admit Card</a>
+      <a class="ql orange" href="#answer">Answer Key</a>
+      <a class="ql purple" href="#syllabus">Syllabus</a>
+      <a class="ql teal" href="#admission">Admission</a>
+    </div>
 
-  <input
-    id="search"
-    type="search"
-    placeholder="नौकरी खोजें..."
-  >
+    <div class="adbox">Advertisement</div>
 
-  <div class="filters">
-    <button data-type="">सभी</button>
-    <button data-type="job">Jobs</button>
-    <button data-type="admit-card">Admit Card</button>
-    <button data-type="answer-key">Answer Key</button>
-    <button data-type="result">Result</button>
-  </div>
+    <section class="section-grid">
+      <section class="panel" id="result">
+        <h2 class="panel-title result-title">Result</h2>
+        <div class="panel-list" id="result-list"><div class="empty">अभी कोई Result उपलब्ध नहीं है।</div></div>
+        <a class="more" href="#result">View All Result →</a>
+      </section>
 
-  <div class="adbox">
-    Advertisement
-  </div>
+      <section class="panel" id="admit">
+        <h2 class="panel-title admit-title">Admit Card</h2>
+        <div class="panel-list" id="admit-list"><div class="empty">अभी कोई Admit Card उपलब्ध नहीं है।</div></div>
+        <a class="more" href="#admit">View All Admit Card →</a>
+      </section>
 
-  <section id="jobs"></section>
+      <section class="panel" id="latest">
+        <h2 class="panel-title latest-title">Latest Job</h2>
+        <div class="panel-list" id="latest-list"><div class="empty">अभी कोई नई भर्ती उपलब्ध नहीं है।</div></div>
+        <a class="more" href="#latest">View All Latest Jobs →</a>
+      </section>
+    </section>
 
-</main>
+    <section class="section-grid lower-grid">
+      <section class="panel" id="answer">
+        <h2 class="panel-title answer-title">Answer Key</h2>
+        <div class="panel-list" id="answer-list"><div class="empty">अभी कोई Answer Key उपलब्ध नहीं है।</div></div>
+      </section>
+      <section class="panel" id="syllabus">
+        <h2 class="panel-title syllabus-title">Syllabus</h2>
+        <div class="static-list">
+          <a href="#">SSC Syllabus</a><a href="#">Railway Syllabus</a><a href="#">UPSC Syllabus</a><a href="#">Banking Syllabus</a>
+        </div>
+      </section>
+      <section class="panel" id="admission">
+        <h2 class="panel-title admission-title">Admission</h2>
+        <div class="static-list">
+          <a href="#">University Admission</a><a href="#">Entrance Exam</a><a href="#">Scholarship</a><a href="#">Important Admission Updates</a>
+        </div>
+      </section>
+    </section>
 
-<script src="app.js"></script>
+    <section class="section-grid lower-grid">
+      <section class="panel"><h2 class="panel-title certificate-title">Certificate</h2><div class="static-list"><a href="#">Caste Certificate</a><a href="#">Income Certificate</a><a href="#">Domicile Certificate</a></div></section>
+      <section class="panel"><h2 class="panel-title offline-title">Offline / Other Jobs</h2><div class="static-list"><a href="#">Offline Form</a><a href="#">Apprentice Jobs</a><a href="#">Contract Jobs</a></div></section>
+      <section class="panel"><h2 class="panel-title important-title">Important Links</h2><div class="static-list"><a href="https://ssc.gov.in/" target="_blank" rel="noopener">SSC Official Website</a><a href="https://upsc.gov.in/" target="_blank" rel="noopener">UPSC Official Website</a><a href="https://www.rrbcdg.gov.in/" target="_blank" rel="noopener">RRB Official Website</a></div></section>
+    </section>
 
+    <div class="adbox">Advertisement</div>
+  </main>
+
+  <footer>
+    <div class="page-wrap footer-inner">
+      <strong>Sarkari Job Portal</strong>
+      <p>सरकारी नौकरी, Result, Admit Card और परीक्षा अपडेट के लिए सूचना पोर्टल। हमेशा आधिकारिक नोटिफिकेशन को प्राथमिक स्रोत मानें।</p>
+      <p>© 2026 Sarkari Job Portal</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
 </body>
 </html>
