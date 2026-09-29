@@ -634,5 +634,27 @@
     "verified": false,
     "autoUpdated": true,
     "updatedAt": "2026-09-28T18:11:17.074Z"
+  },
+  {
+    "id": "auto-366bf0dd7c4820ca",
+    "title": "(843.66 KB)",
+    "url": "https://www.upsc.gov.in/sites/default/files/AdvtNo-12-2026-Engl-250926_0.pdf",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-09-29T18:11:24.236Z"
+  },
+  {
+    "id": "auto-23e5d630f563ba92",
+    "title": "(3.06 MB)",
+    "url": "https://www.upsc.gov.in/sites/default/files/AdvtNo-11-2026-Engl-100926.pdf",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-09-29T18:11:24.249Z"
   }
 ]
