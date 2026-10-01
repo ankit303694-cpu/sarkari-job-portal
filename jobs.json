@@ -1,13 +1,60 @@
 [
   {
     "id": "demo-1",
-    "title": "सरकारी भर्ती अपडेट — उदाहरण",
+    "title": "सरकारी भर्ती अपडेट – उदाहरण",
     "department": "SSC",
     "category": "SSC",
     "type": "latest",
-    "vacancy": "See official notification",
+
+    "shortDescription": "सरकारी नौकरी भर्ती की महत्वपूर्ण जानकारी यहाँ उपलब्ध होगी।",
+
+    "postDate": "",
+    "startDate": "",
     "lastDate": "See official notification",
+
+    "fee": "See official notification",
+
+    "minAge": "",
+    "maxAge": "",
+    "ageAsOn": "",
+    "ageRelaxation": "सरकारी नियमों के अनुसार",
+
+    "vacancy": "See official notification",
+    "vacancyDetails": "",
+
+    "eligibility": "See official notification",
+    "typing": "यदि लागू हो तो आधिकारिक नोटिफिकेशन देखें",
+
+    "selectionProcess": "See official notification",
+
+    "howToApply": "आधिकारिक वेबसाइट पर जाकर नोटिफिकेशन के अनुसार ऑनलाइन आवेदन करें।",
+
     "notificationUrl": "https://ssc.gov.in/",
+    "applyUrl": "https://ssc.gov.in/",
+    "officialWebsite": "https://ssc.gov.in/",
+
+    "importantLinks": [
+      {
+        "label": "Official Notification",
+        "url": "https://ssc.gov.in/"
+      },
+      {
+        "label": "Official Website",
+        "url": "https://ssc.gov.in/"
+      }
+    ],
+
+    "faq": [
+      {
+        "question": "आवेदन की अंतिम तिथि क्या है?",
+        "answer": "आधिकारिक नोटिफिकेशन देखें।"
+      },
+      {
+        "question": "आवेदन कैसे करें?",
+        "answer": "आधिकारिक वेबसाइट पर जाकर आवेदन करें।"
+      }
+    ],
+
     "sourceUrl": "https://ssc.gov.in/",
     "sourceName": "SSC",
     "status": "published",
