@@ -1,21 +1,126 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Job Details | Sarkari Job Portal</title>
-<meta name="description" content="सरकारी नौकरी की पूरी जानकारी, विभाग, vacancy, last date और official notification।">
-<meta name="robots" content="index, follow">
+  <title>Job Details | Sarkari Job Portal</title>
 
-<link rel="canonical" id="canonical" href="https://sarkari-job-portal-a54b.onrender.com/job.html">
+  <meta name="description"
+        content="सरकारी नौकरी की पूरी जानकारी, महत्वपूर्ण तिथियां, योग्यता, आयु सीमा, आवेदन शुल्क, चयन प्रक्रिया और महत्वपूर्ण लिंक।">
 
-<meta property="og:type" content="article">
-<meta property="og:title" id="ogTitle" content="Job Details | Sarkari Job Portal">
-<meta property="og:description" id="ogDescription" content="सरकारी नौकरी की पूरी जानकारी और official notification।">
-<meta property="og:url" id="ogUrl" content="https://sarkari-job-portal-a54b.onrender.com/job.html">
+  <meta name="robots" content="index,follow">
 
-<link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .job-page {
+      max-width: 1000px;
+      margin: auto;
+      padding: 12px;
+    }
+
+    .job-title-box {
+      background: #123b70;
+      color: white;
+      padding: 18px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .job-title-box h1 {
+      margin: 0 0 8px;
+      font-size: 25px;
+    }
+
+    .job-title-box p {
+      margin: 4px 0;
+    }
+
+    .job-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      margin: 14px 0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .job-section h2 {
+      margin: 0;
+      padding: 10px 14px;
+      background: #eeeeee;
+      color: #111;
+      font-size: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .job-content {
+      padding: 12px 14px;
+      line-height: 1.7;
+    }
+
+    .job-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .job-table td,
+    .job-table th {
+      border: 1px solid #ddd;
+      padding: 9px;
+      vertical-align: top;
+    }
+
+    .job-table th {
+      background: #f5f5f5;
+    }
+
+    .important-links a {
+      display: block;
+      padding: 10px;
+      margin: 7px 0;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 10px;
+    }
+
+    .error {
+      padding: 25px;
+      background: #fff0f0;
+      border: 1px solid #e0aaaa;
+      color: #900;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin: 10px 0;
+      text-decoration: none;
+    }
+
+    ul {
+      margin-top: 5px;
+    }
+
+    @media(max-width:600px) {
+      .job-title-box h1 {
+        font-size: 21px;
+      }
+
+      .job-section h2 {
+        font-size: 18px;
+      }
+
+      .job-table {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -26,137 +131,629 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="job-page">
 
-  <div class="adbox">Advertisement</div>
+  <a class="back-link" href="/">← वापस Home Page पर जाएँ</a>
 
-  <article id="j" class="detail">
-    <p>Job details loading...</p>
-  </article>
+  <div id="loading" class="loading">
+    नौकरी की जानकारी लोड हो रही है...
+  </div>
 
+  <div id="error" class="error" style="display:none;"></div>
+
+  <div id="jobPage" style="display:none;">
+
+    <!-- TITLE -->
+    <section class="job-title-box">
+      <h1 id="jobTitle"></h1>
+      <p id="jobIntro"></p>
+    </section>
+
+    <!-- BASIC INFORMATION -->
+    <section class="job-section">
+      <h2>📋 भर्ती की महत्वपूर्ण जानकारी</h2>
+      <div class="job-content">
+        <table class="job-table">
+          <tr>
+            <th>विभाग</th>
+            <td id="department"></td>
+          </tr>
+
+          <tr>
+            <th>कुल पद</th>
+            <td id="vacancy"></td>
+          </tr>
+
+          <tr>
+            <th>आवेदन शुरू</th>
+            <td id="startDate"></td>
+          </tr>
+
+          <tr>
+            <th>आवेदन की अंतिम तिथि</th>
+            <td id="lastDate"></td>
+          </tr>
+
+          <tr>
+            <th>परीक्षा / भर्ती का प्रकार</th>
+            <td id="jobType"></td>
+          </tr>
+
+          <tr>
+            <th>Post Date</th>
+            <td id="postDate"></td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- IMPORTANT DATES -->
+    <section class="job-section">
+      <h2>📅 Important Dates</h2>
+      <div class="job-content">
+        <table class="job-table">
+          <tbody id="datesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FEE -->
+    <section class="job-section">
+      <h2>💰 Application Fee</h2>
+      <div class="job-content" id="fee"></div>
+    </section>
+
+    <!-- AGE -->
+    <section class="job-section">
+      <h2>🎂 Age Limit</h2>
+      <div class="job-content">
+        <table class="job-table">
+          <tr>
+            <th>Minimum Age</th>
+            <td id="minAge"></td>
+          </tr>
+
+          <tr>
+            <th>Maximum Age</th>
+            <td id="maxAge"></td>
+          </tr>
+
+          <tr>
+            <th>Age Limit As On</th>
+            <td id="ageAsOn"></td>
+          </tr>
+        </table>
+
+        <div id="ageRelaxation"></div>
+      </div>
+    </section>
+
+    <!-- VACANCY -->
+    <section class="job-section">
+      <h2>📊 Vacancy Details</h2>
+      <div class="job-content" id="vacancyDetails"></div>
+    </section>
+
+    <!-- ELIGIBILITY -->
+    <section class="job-section">
+      <h2>🎓 Educational Qualification / Eligibility</h2>
+      <div class="job-content" id="eligibility"></div>
+    </section>
+
+    <!-- TYPING -->
+    <section class="job-section">
+      <h2>⌨️ Typing / Skill Test</h2>
+      <div class="job-content" id="typing"></div>
+    </section>
+
+    <!-- SELECTION -->
+    <section class="job-section">
+      <h2>📝 Selection Process</h2>
+      <div class="job-content" id="selection"></div>
+    </section>
+
+    <!-- HOW TO APPLY -->
+    <section class="job-section">
+      <h2>🖊️ How to Apply</h2>
+      <div class="job-content" id="howToApply"></div>
+    </section>
+
+    <!-- IMPORTANT LINKS -->
+    <section class="job-section">
+      <h2>🔗 Important Links</h2>
+      <div class="job-content important-links" id="importantLinks"></div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="job-section">
+      <h2>❓ Frequently Asked Questions</h2>
+      <div class="job-content" id="faq"></div>
+    </section>
+
+  </div>
 </main>
 
 <script>
-const id = new URLSearchParams(location.search).get("id");
-const box = document.getElementById("j");
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
 
-function text(value) {
-  return value == null || value === "" ? "Not available" : String(value);
-}
+  const $ = id => document.getElementById(id);
 
-if (!id) {
-  box.innerHTML = "<h1>Job not found</h1><p>Job ID उपलब्ध नहीं है।</p>";
-} else {
+  function value(v, fallback = "जानकारी उपलब्ध नहीं है") {
+    if (v === null || v === undefined || v === "") return fallback;
 
-  fetch("/api/jobs/" + encodeURIComponent(id))
-    .then(response => {
-      if (!response.ok) throw new Error("Job not found");
-      return response.json();
-    })
-    .then(x => {
+    if (Array.isArray(v)) {
+      return v.join(", ");
+    }
 
-      const title = text(x.title);
-      const department = text(x.department);
-      const vacancy = text(x.vacancy);
-      const lastDate = text(x.lastDate);
-      const type = text(x.type);
+    if (typeof v === "object") {
+      return Object.entries(v)
+        .map(([k, val]) => `<strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(val))}`)
+        .join("<br>");
+    }
 
-      document.title = title + " | Sarkari Job Portal";
+    return escapeHtml(String(v));
+  }
 
-      document.querySelector('meta[name="description"]').setAttribute(
-        "content",
-        title + " की सरकारी नौकरी की जानकारी, vacancy, last date और official notification."
-      );
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
 
-      document.getElementById("ogTitle").setAttribute(
-        "content",
-        title + " | Sarkari Job Portal"
-      );
-
-      document.getElementById("ogDescription").setAttribute(
-        "content",
-        title + " की पूरी सरकारी नौकरी जानकारी और official notification."
-      );
-
-      const pageUrl = window.location.href;
-      document.getElementById("canonical").setAttribute("href", pageUrl);
-      document.getElementById("ogUrl").setAttribute("content", pageUrl);
-
-      box.innerHTML = "";
-
-      const pill = document.createElement("span");
-      pill.className = "pill";
-      pill.textContent = type;
-
-      const h1 = document.createElement("h1");
-      h1.textContent = title;
-
-      const p1 = document.createElement("p");
-      p1.innerHTML = "<b>विभाग:</b> ";
-      p1.appendChild(document.createTextNode(department));
-
-      const p2 = document.createElement("p");
-      p2.innerHTML = "<b>Vacancy:</b> ";
-      p2.appendChild(document.createTextNode(vacancy));
-
-      const p3 = document.createElement("p");
-      p3.innerHTML = "<b>Last Date:</b> ";
-      p3.appendChild(document.createTextNode(lastDate));
-
-      box.appendChild(pill);
-      box.appendChild(h1);
-      box.appendChild(p1);
-      box.appendChild(p2);
-      box.appendChild(p3);
-
-      if (x.notificationUrl) {
-        const a = document.createElement("a");
-        a.className = "btn";
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.href = x.notificationUrl;
-        a.textContent = "Official Notification ↗";
-        box.appendChild(a);
-      }
-
-      /*
-       * JobPosting schema तभी बनाया जाएगा जब जरूरी
-       * structured-data fields उपलब्ध हों।
-       * कोई तारीख/स्थान अनुमान से नहीं बनाया जाएगा।
-       */
+  function first(obj, keys, fallback = "") {
+    for (const key of keys) {
       if (
-        x.datePosted &&
-        x.description &&
-        x.hiringOrganization &&
-        x.jobLocation
+        obj &&
+        obj[key] !== undefined &&
+        obj[key] !== null &&
+        obj[key] !== ""
       ) {
+        return obj[key];
+      }
+    }
 
-        const schema = {
-          "@context": "https://schema.org",
-          "@type": "JobPosting",
-          "title": x.title,
-          "description": x.description,
-          "datePosted": x.datePosted,
-          "hiringOrganization": x.hiringOrganization,
-          "jobLocation": x.jobLocation
-        };
+    return fallback;
+  }
 
-        if (x.validThrough) {
-          schema.validThrough = x.validThrough;
+  function renderListOrText(container, data) {
+
+    if (
+      data === undefined ||
+      data === null ||
+      data === ""
+    ) {
+      container.textContent = "जानकारी उपलब्ध नहीं है";
+      return;
+    }
+
+    if (Array.isArray(data)) {
+      const ul = document.createElement("ul");
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+
+        if (typeof item === "object") {
+          li.innerHTML = Object.entries(item)
+            .map(([k,v]) =>
+              `<strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(v))}`
+            )
+            .join(" — ");
+        } else {
+          li.textContent = item;
         }
 
-        const script = document.createElement("script");
-        script.type = "application/ld+json";
-        script.textContent = JSON.stringify(schema);
-        document.head.appendChild(script);
+        ul.appendChild(li);
+      });
+
+      container.innerHTML = "";
+      container.appendChild(ul);
+      return;
+    }
+
+    if (typeof data === "object") {
+      container.innerHTML = Object.entries(data)
+        .map(([k,v]) =>
+          `<p><strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(v))}</p>`
+        )
+        .join("");
+
+      return;
+    }
+
+    container.textContent = data;
+  }
+
+  function renderDates(job) {
+
+    const rows = [];
+
+    const dates = first(job, [
+      "importantDates",
+      "important_dates",
+      "dates"
+    ], null);
+
+    if (dates && typeof dates === "object") {
+
+      Object.entries(dates).forEach(([key,val]) => {
+        rows.push(
+          `<tr>
+            <th>${escapeHtml(key)}</th>
+            <td>${escapeHtml(String(val))}</td>
+          </tr>`
+        );
+      });
+    }
+
+    if (!rows.length) {
+
+      const start = first(job, [
+        "startDate",
+        "applicationStart",
+        "applyStart"
+      ]);
+
+      const last = first(job, [
+        "lastDate",
+        "applicationLastDate",
+        "applyLastDate"
+      ]);
+
+      if (start) {
+        rows.push(
+          `<tr>
+            <th>आवेदन शुरू</th>
+            <td>${escapeHtml(String(start))}</td>
+          </tr>`
+        );
       }
 
-    })
-    .catch(() => {
-      box.innerHTML =
-        "<h1>Job not found</h1><p>यह job अभी उपलब्ध नहीं है।</p>";
-    });
-}
+      if (last) {
+        rows.push(
+          `<tr>
+            <th>अंतिम तिथि</th>
+            <td>${escapeHtml(String(last))}</td>
+          </tr>`
+        );
+      }
+    }
+
+    $("datesTable").innerHTML =
+      rows.length
+      ? rows.join("")
+      : `<tr><td>Important Dates उपलब्ध नहीं हैं</td></tr>`;
+  }
+
+  function renderLinks(job) {
+
+    const box = $("importantLinks");
+    box.innerHTML = "";
+
+    const links = first(job, [
+      "importantLinks",
+      "important_links",
+      "links"
+    ], null);
+
+    if (links && typeof links === "object") {
+
+      Object.entries(links).forEach(([name,url]) => {
+
+        if (!url) return;
+
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = name;
+
+        box.appendChild(a);
+      });
+    }
+
+    const official = first(job, [
+      "officialNotification",
+      "notificationUrl",
+      "notification",
+      "officialUrl"
+    ]);
+
+    const apply = first(job, [
+      "applyOnline",
+      "applyUrl",
+      "applicationUrl"
+    ]);
+
+    if (apply) {
+
+      const a = document.createElement("a");
+
+      a.href = apply;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Apply Online";
+
+      box.appendChild(a);
+    }
+
+    if (official) {
+
+      const a = document.createElement("a");
+
+      a.href = official;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Official Notification";
+
+      box.appendChild(a);
+    }
+
+    if (!box.children.length) {
+      box.textContent = "महत्वपूर्ण लिंक उपलब्ध नहीं हैं";
+    }
+  }
+
+  function makeJobSchema(job) {
+
+    const title = first(job, ["title", "name"], "Government Job");
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": title,
+      "description":
+        first(job, ["description", "intro", "shortDescription"], title)
+    };
+
+    const department = first(job, [
+      "department",
+      "organization",
+      "company"
+    ]);
+
+    if (department) {
+      schema.hiringOrganization = {
+        "@type": "Organization",
+        "name": department
+      };
+    }
+
+    const lastDate = first(job, [
+      "lastDate",
+      "applicationLastDate",
+      "applyLastDate"
+    ]);
+
+    if (lastDate) {
+      schema.validThrough = lastDate;
+    }
+
+    const location = first(job, [
+      "jobLocation",
+      "location"
+    ]);
+
+    if (location) {
+      schema.jobLocation = {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "IN"
+        }
+      };
+    }
+
+    const script = document.createElement("script");
+
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema);
+
+    document.head.appendChild(script);
+  }
+
+  async function loadJob() {
+
+    if (!id) {
+
+      $("loading").style.display = "none";
+      $("error").style.display = "block";
+
+      $("error").textContent =
+        "Job ID नहीं मिला। कृपया Job List से किसी भर्ती को खोलें।";
+
+      return;
+    }
+
+    try {
+
+      const response =
+        await fetch("/api/jobs/" + encodeURIComponent(id));
+
+      if (!response.ok) {
+        throw new Error("Job not found");
+      }
+
+      const job = await response.json();
+
+      const title = first(job, ["title", "name"], "Government Job");
+
+      $("jobTitle").textContent = title;
+
+      $("jobIntro").textContent =
+        first(job, [
+          "shortDescription",
+          "intro",
+          "description"
+        ], "सरकारी नौकरी की पूरी जानकारी नीचे दी गई है।");
+
+      $("department").textContent =
+        first(job, [
+          "department",
+          "organization",
+          "company"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("vacancy").textContent =
+        first(job, [
+          "vacancy",
+          "totalVacancy",
+          "totalPosts",
+          "posts"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("startDate").textContent =
+        first(job, [
+          "startDate",
+          "applicationStart",
+          "applyStart"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("lastDate").textContent =
+        first(job, [
+          "lastDate",
+          "applicationLastDate",
+          "applyLastDate"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("jobType").textContent =
+        first(job, [
+          "type",
+          "category"
+        ], "सरकारी भर्ती");
+
+      $("postDate").textContent =
+        first(job, [
+          "postDate",
+          "publishedDate",
+          "date"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      renderDates(job);
+
+      renderListOrText(
+        $("fee"),
+        first(job, [
+          "fee",
+          "applicationFee",
+          "fees"
+        ])
+      );
+
+      $("minAge").textContent =
+        first(job, [
+          "minAge",
+          "minimumAge"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("maxAge").textContent =
+        first(job, [
+          "maxAge",
+          "maximumAge"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      $("ageAsOn").textContent =
+        first(job, [
+          "ageAsOn",
+          "ageLimitAsOn"
+        ], "जानकारी उपलब्ध नहीं है");
+
+      renderListOrText(
+        $("ageRelaxation"),
+        first(job, [
+          "ageRelaxation",
+          "age_relaxation"
+        ])
+      );
+
+      renderListOrText(
+        $("vacancyDetails"),
+        first(job, [
+          "vacancyDetails",
+          "postWiseVacancy",
+          "postDetails"
+        ])
+      );
+
+      renderListOrText(
+        $("eligibility"),
+        first(job, [
+          "eligibility",
+          "qualification",
+          "educationalQualification",
+          "education"
+        ])
+      );
+
+      renderListOrText(
+        $("typing"),
+        first(job, [
+          "typing",
+          "skillTest",
+          "skill"
+        ])
+      );
+
+      renderListOrText(
+        $("selection"),
+        first(job, [
+          "selectionProcess",
+          "selection"
+        ])
+      );
+
+      renderListOrText(
+        $("howToApply"),
+        first(job, [
+          "howToApply",
+          "how_to_apply",
+          "applicationProcess"
+        ])
+      );
+
+      renderLinks(job);
+
+      renderListOrText(
+        $("faq"),
+        first(job, [
+          "faq",
+          "faqs",
+          "frequentlyAskedQuestions"
+        ])
+      );
+
+      document.title =
+        title + " | Sarkari Job Portal";
+
+      const canonical =
+        document.getElementById("canonical");
+
+      if (canonical) {
+        canonical.href = location.href;
+      }
+
+      makeJobSchema(job);
+
+      $("loading").style.display = "none";
+      $("jobPage").style.display = "block";
+
+    } catch (error) {
+
+      console.error(error);
+
+      $("loading").style.display = "none";
+      $("error").style.display = "block";
+
+      $("error").textContent =
+        "इस भर्ती की जानकारी अभी उपलब्ध नहीं है। कृपया थोड़ी देर बाद फिर प्रयास करें।";
+    }
+  }
+
+  loadJob();
 </script>
 
 </body>
