@@ -26,7 +26,7 @@ jobs:
             {
               name: "SSC",
               urls: [
-                "https://ssc.gov.in/"
+                "https://ssc.gov.in/?pfrom=news"
               ]
             },
             {
