@@ -801,5 +801,60 @@
     "verified": false,
     "autoUpdated": true,
     "updatedAt": "2026-11-16T14:38:35.344Z"
+  },
+  {
+    "id": "auto-80976e270fb0c7e0",
+    "title": "Examination Calendar",
+    "url": "https://www.upsc.gov.in/examination-calendar/",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-11-19T15:09:55.228Z"
+  },
+  {
+    "id": "auto-c7d778c23b4021df",
+    "title": "Active Examinations",
+    "url": "https://www.upsc.gov.in/active-examinations/",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-11-19T15:09:55.232Z"
+  },
+  {
+    "id": "auto-ee7a9d6c2ac177a9",
+    "title": "Previous Exam Details",
+    "url": "https://www.upsc.gov.in/previous-exam-details/",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-11-19T15:09:55.232Z"
+  },
+  {
+    "id": "auto-6a28ad99a981f1d9",
+    "title": "Advertisements",
+    "url": "https://www.upsc.gov.in/advertisements/",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-11-19T15:09:55.232Z"
+  },
+  {
+    "id": "auto-e9a6712a521f27d9",
+    "title": "Recruitment Representation on Question Papers",
+    "url": "https://www.upsc.gov.in/recruitment-representation-on-question-papers/",
+    "type": "latest",
+    "source": "UPSC",
+    "status": "pending_verification",
+    "verified": false,
+    "autoUpdated": true,
+    "updatedAt": "2026-11-19T15:09:55.232Z"
   }
 ]
